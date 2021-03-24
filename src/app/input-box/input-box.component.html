@@ -1,0 +1,33 @@
+
+<table class="input-rows-cols-table">
+    <tr>
+        <td>Rows:</td>
+        <td class="size-input-td"><input [(ngModel)]="row" class="size-input" title="Number of rows" placeholder="1-9" (ngModelChange)="rowChange($event)"></td>
+    </tr>
+    <tr>
+        <td>Columns:</td>
+        <td class="size-input-td"><input [(ngModel)]="column" class="size-input" title="Number of columns" placeholder="1-9" (ngModelChange)="columnChange($event)"></td>
+    </tr>
+    <tr>
+        <td>Select rows: </td>
+        <td><input [(ngModel)]="selected" title="Rows that are selected in the table" id="rowSelectorInput" placeholder="1,2,3-5,7-9" (ngModelChange)="selectChange($event)" (keydown)="test($event)"></td>
+    </tr>
+</table>
+<div>
+    <table class="classroom-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th class="column-number" *ngFor="let col of columns; let i = index">C{{i+1}}</th>
+            </tr>
+        </thead>
+       <tbody>
+        <tr *ngFor="let row of rows; let i = index" [ngClass]="{'selected': checkIsRowSelected(i)}" onclick="rowClicked(i)">
+            <td class="row-number">{{i+1}}</td> 
+            <td *ngFor="let col of columns">
+                <div class="square"></div>
+            </td>
+         </tr>
+       </tbody>
+    </table>
+ </div>
