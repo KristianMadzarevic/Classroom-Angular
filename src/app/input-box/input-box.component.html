@@ -10,7 +10,7 @@
     </tr>
     <tr>
         <td>Select rows: </td>
-        <td><input [(ngModel)]="selected" title="Rows that are selected in the table" id="rowSelectorInput" placeholder="1,2,3-5,7-9" (ngModelChange)="selectChange($event)" (keydown)="test($event)"></td>
+        <td><input [(ngModel)]="sortedStateOfInput"  title="Rows that are selected in the table" id="rowSelectorInput" placeholder="1,2,3-5,7-9" (ngModelChange)="selectChange($event)" (keydown)="test($event)" (blur)="lostFocus()" onclick=" let value = this.value; this.value = null; this.value=value"></td>
     </tr>
 </table>
 <div>
@@ -22,9 +22,9 @@
             </tr>
         </thead>
        <tbody>
-        <tr *ngFor="let row of rows; let i = index" [ngClass]="{'selected': checkIsRowSelected(i)}" onclick="rowClicked(i)">
+        <tr *ngFor="let row of rows; let i = index" [ngClass]="{'selected': checkIsRowSelected(i)}" (click)="rowClicked(i+1)">
             <td class="row-number">{{i+1}}</td> 
-            <td *ngFor="let col of columns">
+            <td *ngFor="let col of columns" >
                 <div class="square"></div>
             </td>
          </tr>

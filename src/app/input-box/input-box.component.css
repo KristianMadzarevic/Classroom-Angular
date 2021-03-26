@@ -1,7 +1,7 @@
-*{
+* {
     margin: 3px;
     padding: 0;
-    background-color: rgb(245, 243, 237);
+    background-color: rgb(235, 234, 231);
 }
 .input-rows-cols-table{
     width:20%;
@@ -16,9 +16,6 @@ table{
     padding: 0.2vh;
     border-radius: 5px;
     margin-bottom: 3px;
-}
-.selected {
-    background-color: rgb(167, 58, 39);
 }
 .square{
     border-style: solid;
@@ -47,4 +44,8 @@ table{
 }
 .size-input-td{
     text-align: left;
+}
+.selected td div{
+    background-color: rgb(212, 212, 209);
+    font-size: 36px;
 }
