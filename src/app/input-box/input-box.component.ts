@@ -1,280 +1,298 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter,  ChangeDetectorRef} from '@angular/core';
 
 @Component({
   selector: 'app-input-box',
   templateUrl: './input-box.component.html',
-  styleUrls: ['./input-box.component.css']
+  styleUrls: ['./input-box.component.css'],
 })
 export class InputBoxComponent implements OnInit {
-  public row = 9;
-  public rows: number[] = [];
-  public column = 7;
-  public columns: number[] = [];
+  @Input() row = 9;//number of rows
+  @Input() column = 7;//number of columns
+  @Input() value:string = '';//value input by parent and shown in input field
+  rows: number[] = [];//container of rows
+  columns: number[] = [];//container of columns
+  numbers:string = '123456789';
+  buttons:string = '0123456789,-';
+  specials:string = ',-';
+  stateOfInput:string[] = [];//value split by ','and sorted
+  allSelectedRows:number[] = [];
+  @Output() valueEvent = new EventEmitter<string>();//child -> parent
+  isVisible:boolean = false;//trigger of a message as an alert
+  issue:string = '';//the alert message
+  
+  constructor(private cd:ChangeDetectorRef) {}
 
-  public selected:string = '';
-  public stateOfInput:string = '';
-  public numbers:string = '123456789'
-  public smallerInRange = 0;
-  public biggerInRange = 0;
-  public listOfSelectedRows:string = '';
-  public isInRange:boolean = false;
-
-  public splitStateOfInput:string[] = [];
-  public sortedStateOfInput:string = '';
-  public rangeContainer:string[] = [];
-
-  constructor() {}
-
+  sendValueToParent(){
+    /*child -> parent */
+    this.valueEvent.emit(this.value);
+  }
+  ngAfterViewInit(){
+    /* detects changes after initialisation, possibly input by parent */
+    this.cd.detectChanges();
+  }
   ngOnInit(): void {
     this.rowChange(this.row);
     this.columnChange(this.column);
+    this.selectChange(this.value,true);
   }
-  public rowChange(e: number) {
+  rowChange(e: number) {
+    /* create some rows */
     this.rows=[];
     this.row = e;
     for (let i = 0; i < this.row; i++) {
       this.rows.push(i);
     }
   }
-  public columnChange(e: number) {
+  columnChange(e: number) {
+    /* create some columns */
     this.columns=[];
     this.column = e;
     for (let i = 0; i < this.column; i++) {
       this.columns.push(i);
     }
   }
-  public selectChange(e: string) {
-    this.stateOfInput=e;
-  }
-  public test(e: any) {
-    this.isInRange=false;
-    if(this.numbers.includes(e.key) == false 
-      && e.key !== ',' && e.key !== 'Backspace' && e.key !== '-' 
-      || this.listOfSelectedRows.includes(e.key) 
-      || (e.key == this.stateOfInput[this.stateOfInput.length-1] && e.key != 'Backspace') 
-      || (this.stateOfInput.length == 0 && this.numbers.includes(e.key) == false)
-      /*upon deleting, if the last char is , or - then the user cannot input another , or - */
-      || ((this.stateOfInput[this.stateOfInput.length-1] == ',' || this.stateOfInput[this.stateOfInput.length-1] == '-') && (e.key == ',' || e.key == '-'))
-      /*if the last char was a number, this next one can't be a number*/
-      || (this.numbers.includes(this.stateOfInput[this.stateOfInput.length-1]) && this.numbers.includes(e.key))
-      /*if the last char was 9, this next one can't be '-'*/
-      || (this.stateOfInput[this.stateOfInput.length-1] == '9' && e.key == '-')
-      /* if that is a range, the second number must be larger */
-      || (this.numbers.includes(this.stateOfInput[this.stateOfInput.length-2]) && this.stateOfInput[this.stateOfInput.length-1] == '-' && this.numbers.includes(e.key) && e.key <= parseInt(this.stateOfInput[this.stateOfInput.length-2])))
-    {
+  keyDown(e: any) {
+    /* disable input of some obviously wrong strings */
+    let prev:string = this.value[this.value.length-1];
+    /* if its not a button we can press */
+    if(this.buttons.includes(e.key) == false && e.key != 'Backspace' && e.key != 'Escape'){
+        this.issue='You are trying to press a button that is not supported!';
+        this.showAlert();
+        e.preventDefault();
+        return;
+      }
+    /* if its the first thing we input */
+    if(this.value.length == 0 && this.specials.includes(e.key)){
+      this.issue='Please input numbers first!';
+      this.showAlert();
       e.preventDefault();
-    }else {
-      /* if the range is trying to add an already existing row, don't allow input of that range */
-      if(this.numbers.includes(this.stateOfInput[this.stateOfInput.length-2]) && this.stateOfInput[this.stateOfInput.length-1] == '-' && this.numbers.includes(e.key)){
-        let first = parseInt(this.stateOfInput[this.stateOfInput.length-2])+1;
-        let second = e.key;
-        for(let i:number=first;i<second;i++){
-          if(this.listOfSelectedRows.includes(String(i)) == true){
-            e.preventDefault();
-            this.isInRange = true;
-            break;
-          }
-        }
-      }
-      if(this.isInRange == false) {
-        if(this.numbers.includes(this.stateOfInput[this.stateOfInput.length-2]) && this.stateOfInput[this.stateOfInput.length-1] == '-' && this.numbers.includes(e.key)){
-          this.smallerInRange = parseInt(this.stateOfInput[this.stateOfInput.length-2]);
-          this.biggerInRange = e.key;
-          this.adder(this.smallerInRange,this.biggerInRange);
-          this.smallerInRange=0; 
-          this.biggerInRange=0;
-        }else {
-          if(this.numbers.includes(e.key) && this.listOfSelectedRows.includes(e.key) == false){
-            this.listOfSelectedRows += e.key;
-            console.log('dodao se ');
-          }
-        }
-      }
-      if(e.key == 'Backspace'){
-        this.refill();
+      return;
+    }
+    /* if we try adding ,- after ,- */
+    if((prev == ',' || prev == '-') && (e.key == ',' || e.key == '-')){
+      this.issue='You cannot add , or - after , or -';
+      this.showAlert();
+      e.preventDefault();
+      return;
+    }
+    /* if we try adding another - after we already input a range */
+    if(this.value.lastIndexOf('-') != -1 && (this.value.lastIndexOf(',') < this.value.lastIndexOf('-')) && e.key == '-'){
+      this.issue='Please insert only one - in a range!';
+      this.showAlert();
+      e.preventDefault();
+      return;
+    }
+    /* if we try adding an already existing number, check if the last number we're trying to add is already in the allSelectedRows and don't let the user add a ',' to complete a false number. */
+    if(e.key == ',' && this.stateOfInput.slice(0,this.stateOfInput.length-1).includes(this.value.substring(this.value.lastIndexOf(',')+1,this.value.length))){
+      this.issue='You are trying to add an already existing number!';
+      this.showAlert();
+      e.preventDefault();
+      return;
+    }
+    /* if the end of a range is smaller than the start */
+    if(this.stateOfInput.length > 0){
+      if(this.stateOfInput[this.stateOfInput.length-1].includes('-') 
+        && parseInt(this.stateOfInput[this.stateOfInput.length-1].substring(0,this.stateOfInput[this.stateOfInput.length-1].indexOf('-'))) 
+        > parseInt(this.stateOfInput[this.stateOfInput.length-1].substring(this.stateOfInput[this.stateOfInput.length-1].indexOf('-')+1,this.stateOfInput[this.stateOfInput.length-1].length))){
+        this.issue='The end of a range must be bigger than the start!';
+        this.showAlert();
+        return;
       }
     }
   }
-  public adder(smaller:number, bigger:number){
-    let rangeKojiCemoDodati:string = '';
-    for(let i:number=smaller;i<=bigger;i++){
-      if( this.listOfSelectedRows.includes(String(i)) == false){
-        this.listOfSelectedRows += String(i);
-      }
-      
-      rangeKojiCemoDodati += String(i);
+  selectChange(e: string,fromParent:boolean) {
+    /* handles a received change of input field */
+    this.removeUnwantedKeys();
+    this.stateOfInput = this.value.split(',');
+    this.removeBadStrings();
+    this.refill();
+    this.allSelectedRows.sort();
+    if(fromParent){
+      this.lostFocus();
     }
-    console.log('rangeKojiCemoDodati');
-    console.log(rangeKojiCemoDodati);
-    this.rangeContainer.push(rangeKojiCemoDodati);
-    console.log('rangeContainer');
-    console.log(this.rangeContainer);
-
+    this.sendValueToParent();//child -> parent
   }
-  public refill(){
-    this.listOfSelectedRows='';
-    for(let i=0;i<this.stateOfInput.length-1;i++){
-      /* range, taking in consideration that stateOfInput deletes 1 button slower */
-      if(i!=this.stateOfInput.length-3 && this.numbers.includes(this.stateOfInput[i]) && this.stateOfInput[i+1] == '-' && this.numbers.includes(this.stateOfInput[i+2])){
-        console.log('it is a range');
-        let first = parseInt(this.stateOfInput[i]);
-        let second = parseInt(this.stateOfInput[i+2]);
-        this.adder(first,second);
-        first=0; 
-        second=0;
+  removeUnwantedKeys(){
+    /* remove everything except numbers and ,- */
+    let tempValue = this.value.slice();
+    for(let i=0;i<tempValue.length;i++){
+      if ((this.numbers.includes(tempValue[i]) != true && this.specials.includes(tempValue[i]) != true)){
+        tempValue= tempValue.substring(0,i)+tempValue.substring(i+1,tempValue.length);
+        i--;
       }
-      /* number, not being range */
-      if(this.numbers.includes(this.stateOfInput[i]) && this.stateOfInput[i+1] != '-' && this.stateOfInput[i-1] != '-'){
-        this.listOfSelectedRows += String(this.stateOfInput[i]);
+    }
+    this.value=tempValue;
+  }
+  removeBadStrings(){
+    /* remove inputs that start or end with '-' */
+    let tempInput= this.stateOfInput.slice();
+    for(let i=0;i<tempInput.length;i++){
+      while(typeof this.stateOfInput[0] !== 'undefined' && (this.stateOfInput[i][0] == '-' || this.stateOfInput[i][this.stateOfInput[i].length-1] == '-' )){
+        this.stateOfInput[i] = this.stateOfInput[i].substring(1,this.value.length);
       }
     }
   }
-  public lostFocus(){
-    if(this.stateOfInput[0] == '-'){
-      this.stateOfInput = '';
-    }
-    this.sortedStateOfInput='';
-    this.splitStateOfInput = this.stateOfInput.split(',');
-    let sortedStateOfInputArray:string[] = [];
-    sortedStateOfInputArray = this.splitStateOfInput.sort();
-    for(let i=0;i<sortedStateOfInputArray.length;i++){
-      if(sortedStateOfInputArray[i] != ''){
-        this.sortedStateOfInput += sortedStateOfInputArray[i];
-        if(i != sortedStateOfInputArray.length-1){
-          this.sortedStateOfInput += ','
-        }
+  refill(){
+    /* adds numbers from stateOfInput to allSelectedRows, for highlighting. Only allow adding new numbers, not duplicates.*/
+    this.allSelectedRows = [];
+    for( let oneInput of this.stateOfInput){
+      if(oneInput != ''){
+        this.adder(oneInput);
       }
     }
-    
-    console.log('sortedStateOfInput');
-    console.log(this.sortedStateOfInput);
-    console.log('stateOfInput');
-    console.log(this.stateOfInput);
-    this.stateOfInput = this.sortedStateOfInput;
-    console.log('stateOfInput after its equaled with sortedStateOfInput');
-    console.log(this.stateOfInput);
-    console.log('listOfSelectedRows');
-    console.log(this.listOfSelectedRows);
-    for(let i=0;i<this.sortedStateOfInput.length;i++){
-      if(this.numbers.includes(this.stateOfInput[i]) && this.listOfSelectedRows.includes(this.stateOfInput[i]) == false){
-        this.listOfSelectedRows += this.stateOfInput[i];
-      }
-    }
-
   }
-  
-  public checkIsRowSelected(i:any) {
-    /* highlight selected wors */
+  adder(oneInput:string){
+    /* adds an input to allSelectedRows, be it a range or one number. */
+    /* if allSelectedRows already contains that number, it will not add him or that range. */
+    if(oneInput.includes('-') && oneInput.indexOf('-') != oneInput.length-1){
+      let smaller = parseInt(oneInput.substring(0,oneInput.indexOf('-')));
+      let bigger = parseInt(oneInput.substring(oneInput.indexOf('-')+1,oneInput.length));
+      if(smaller >= bigger) {
+        this.issue='Second number in a range must be bigger then the first number in that range!';
+        this.showAlert();
+        this.subtractRange(smaller,false);
+        return;
+      }
+      for(let i = smaller; i <= bigger; i++){
+        if(this.allSelectedRows.includes(i)){
+          this.issue='One of the numbers in this range is already selected. Please specify a different range!';
+          this.stateOfInput[this.stateOfInput.indexOf(oneInput)] = '';
+          this.showAlert();
+          return;
+        }// do not add any numbers if any of the numbers selected by range are already contained in allSelectedRows
+      }
+      for(let i = smaller; i <= bigger; i++){
+        this.allSelectedRows.push(i);
+      }
+      return;
+    }
+    /* if it's just a number */
+    if(this.allSelectedRows.includes(parseInt(oneInput))){
+      this.issue='This number is already selected. Please select a different number!';
+      this.stateOfInput[this.stateOfInput.indexOf(oneInput)] = '';
+      this.showAlert();
+      return;
+    }
+    this.allSelectedRows.push(parseInt(oneInput));
+  }
+  lostFocus(){
+    /* All the sorting and filtering that needs to be done after the change is final (blur) */
+    this.checkForDuplicates();
+    this.checkNumberOfRows();
+    let stateOfInputNumbers:number[] = [];
+    for(let i=0; i<this.stateOfInput.length;i++){
+      stateOfInputNumbers.push(parseInt(this.stateOfInput[i]));
+    }
+    stateOfInputNumbers.sort(function (a, b){ return a-b;});
+    this.numbersToString(stateOfInputNumbers);
+    this.checkForDuplicates();
+    this.fillInPretty(true);
+    this.sendValueToParent();
+  }
+  fillInPretty(fillInLast:boolean) {
+    /* Add inputs from stateOfInput nicely into value. */
+    this.value = '';
+    for(let i = 0; i < this.stateOfInput.length; i++){
+      this.value += this.stateOfInput[i];
+      if(i != this.stateOfInput.length-1){
+        this.value += ',';
+      }
+    }
+  }
+  checkIsRowSelected(i:any) {
+    /* return true if a certain row is selected, for highlighting */
     i++;
-    if(this.listOfSelectedRows.includes(i.toString())){
-      return true;
-    }else {
-      return false;
-    }
+    return this.allSelectedRows.includes(i);
   }
-  public rowClicked(i:any){
-    console.log('clicked: ');
-    console.log(i);
-    /* if stateOfInput has something, add a ',' before a number */
-    if(this.stateOfInput != '' && this.stateOfInput[this.stateOfInput.length] != ','){
-      this.stateOfInput += ',';
+  rowClicked(i:any){
+    /* when a row is clicked, if it's a new row, add it. if it's already added, remove it. */
+    if(this.allSelectedRows.includes(i) == false){
+      this.stateOfInput.push(String(i));
+      this.refill();
+      this.lostFocus();
+      return;
     }
-    if(this.listOfSelectedRows.includes(i.toString()) == false){
-      this.stateOfInput += String(i) +',';
+    /* if it's a number, just substract it from stateOfInput*/
+    if(this.stateOfInput.includes(String(i))){
+      this.stateOfInput.splice(this.stateOfInput.indexOf(String(i)),1);
+      this.refill();
       this.lostFocus();
-      this.listOfSelectedRows += String(i);
-      console.log('listOfSelectedRows: ');
-      console.log(this.listOfSelectedRows);
-      console.log('stateOfInput: ');
-      console.log(this.stateOfInput);
-    }else{
-      /* check if the number is a part of a range, so you could delete the '-' and the next number too 
-      RIJESI BRISANJE TU A NE U DISSAS...
-      NEVALJA TI BRISANJE!!!
-      */
-      /* first range */
-
-
-      /* 
-      obrise samo crticu, to popraviti!!!
- 
-      Ne zanoravi da treba iz rangeContainer obrisati taj string!
-
-
-      za prvi u rangeu radi, ali za zadnji ne radi
-
-      */
-      if(this.stateOfInput.includes(String(i)) && this.stateOfInput[this.stateOfInput.indexOf(String(i))+1] == '-' && this.numbers.includes(this.stateOfInput[this.stateOfInput.indexOf(String(i))+2])) {
-        let culprit:number =parseInt(this.stateOfInput[this.stateOfInput.indexOf(String(i))]);
-        console.log('it was first in range so StateOfInput will remove a few chars : ' + this.stateOfInput);
-        this.stateOfInput = this.removeCharFromString(culprit,this.stateOfInput);
-        console.log('it was first in range so StateOfInput will remove a few chars : ' + this.stateOfInput);
-        this.stateOfInput = this.removeCharFromString(culprit,this.stateOfInput);
-        console.log('it was first in range so StateOfInput will remove a few chars : ' + this.stateOfInput);
-        this.stateOfInput = this.removeCharFromString(culprit-1,this.stateOfInput);
-        console.log('it was first in range so StateOfInput now looks : ' + this.stateOfInput);
-
-      }else if(this.stateOfInput.includes(String(i)) && this.stateOfInput[this.stateOfInput.indexOf(String(i))-1] == '-' && this.numbers.includes(this.stateOfInput[this.stateOfInput.indexOf(String(i))-2])) {
-        let culprit:number =parseInt(this.stateOfInput[this.stateOfInput.indexOf(String(i))]);
-        console.log('it was last in range so StateOfInput will remove a few chars : ' + this.stateOfInput);
-        this.stateOfInput = this.removeCharFromString(culprit,this.stateOfInput);
-        this.stateOfInput = this.removeCharFromString(culprit-1,this.stateOfInput);
-        this.stateOfInput = this.removeCharFromString(culprit-2,this.stateOfInput);
-        console.log('it was last in range so StateOfInput now looks : ' + this.stateOfInput);
-      }else {
-        this.stateOfInput = this.stateOfInput.split(String(i)).join('');
-      }
-      /* remove ',' after the number if there is one. */
-      if(this.stateOfInput[i+1] == ','){
-        console.log('before removing a , it looks: ');
-        console.log(this.stateOfInput);
-        this.stateOfInput = this.removeCharFromString (i+1, this.stateOfInput);
-        console.log('removed a , and now it looks: ');
-        console.log(this.stateOfInput);
-      }
-      this.lostFocus();
-      this.listOfSelectedRows= this.listOfSelectedRows.split(String(i)).join('');
-      console.log('listOfSelectedRows: ');
-      console.log(this.listOfSelectedRows);
-      console.log('stateOfInput: ');
-      console.log(this.stateOfInput);
-      /* if the rangeContainer contains the row in any of it's strings, make it dissasemble that string and add other numbers from the range as singles to the stateOfInput. Sorte the stateOfInput. */
-      for(let j=0;j<this.rangeContainer.length;j++){
-        for( let k=0; k<this.rangeContainer[j].length;k++){
-          if(parseInt(i) == parseInt(this.rangeContainer[j][k])) {
-            this.dissasemble(this.rangeContainer[j], parseInt(i));
-            /* Delete the combo from rangeContainer */
-            this.rangeContainer[j] = ''
-            /* 
-            
-            
-            izbaci prazni string iz rangeContainer and you're probably golden!!
-            
-            
-            
-            */
-            console.log(this.rangeContainer);
-          }
+      return;
+    }
+    /* range substraction here */
+    this.subtractRange(i,true);
+    this.refill();
+    this.lostFocus();
+  }
+  subtractRange(i:any,addRest:boolean){
+    /* removes a range containing number i from stateOfInput */
+    let pointsOfRange:number[] = this.findPoints(i);
+    let range:string = pointsOfRange[0] + '-' + pointsOfRange[1];
+    this.stateOfInput.splice(this.stateOfInput.indexOf(range),1);//delete that range
+    if(addRest){//add the other numbers from that range if addRest is true
+      for(let j=pointsOfRange[0];j<=pointsOfRange[1];j++){
+        if(j != i){
+          this.stateOfInput.push(String(j));
         }
-        
       }
     }
   }
-  public dissasemble(stringToDissasemble:string, culpritNumber:number){
+  findPoints(i:number):number[]{
+    /* returns numbers of a certain range, smaller - bigger */
+    for( let k=0;k<this.stateOfInput.length;k++){
+      if(this.stateOfInput[k].includes('-')){
+        let smaller = parseInt(this.stateOfInput[k].substring(0,this.stateOfInput[k].indexOf('-')));
+        let bigger = parseInt(this.stateOfInput[k].substring(this.stateOfInput[k].indexOf('-')+1,this.stateOfInput[k].length));
+        if((smaller <= i && bigger >i) || i == bigger){
+          return [smaller,bigger];
+        }
+      }
+    }
+    return [0,0];
+  }
+  checkForDuplicates(){
+    /* filter for duplicates in stateOfInput */
+    for(let i=0;i<this.stateOfInput.length;i++){
+      for(let j=i+1;j<=this.stateOfInput.length;j++){
+        if(this.stateOfInput[i] != '' && this.stateOfInput[i] == this.stateOfInput[j]){
+          this.stateOfInput[j] = '';
+        }
+      }
+    }
+    /* filters for empty strings, sorts and puts the new sorted array on display */
+    this.stateOfInput = this.stateOfInput.filter(v => v!='');
+  }
+  checkNumberOfRows(){
+    /* delete inputs that are trying to add rows bigger than the max row number */
+    for( let k in this.stateOfInput){
+      if(this.stateOfInput[k].includes('-')){//range
+        let bigger = parseInt(this.stateOfInput[k].substring(this.stateOfInput[k].indexOf('-')+1,this.stateOfInput[k].length));
+        if(bigger > this.row){
+          this.subtractRange(bigger,false);
+        }
+      }
 
-  for(let i=0;i<stringToDissasemble.length;i++){
-    if(parseInt(stringToDissasemble[i]) != culpritNumber){
-      console.log("Ovaj bi se dodao " + parseInt(stringToDissasemble[i]));
-      this.stateOfInput += stringToDissasemble[i];
-      this.stateOfInput += ',';
-      
+      if(parseInt(this.stateOfInput[k]) > this.row){//number
+        this.stateOfInput.splice(this.stateOfInput.indexOf(String(k)),1);
+      }
     }
   }
-  this.lostFocus();
+  numbersToString(nums: number[]) {
+    /* takes numbers from nums and matches them with stateOfInput strings, and if they match, sorts stateOfInput accordingly */
+    let tempStrings = this.stateOfInput.slice();
+    for(let i=0;i<nums.length;i++){
+      for(let j=0;j<nums.length;j++){
+        if(nums[i]==parseInt(tempStrings[j])){
+          this.stateOfInput[i]=tempStrings[j];
+          break;
+        }
+      }
+    }
   }
- public removeCharFromString (indexOfChar:number, stringA:string):string{
-   return stringA.slice(0,indexOfChar) + stringA.substr(indexOfChar+1);
- }
-
-
+  showAlert(){
+    /* hide the alert after 2s */
+    if (this.isVisible) {return;} 
+    this.isVisible = true;
+    setTimeout(()=> this.isVisible = false,2000);
+  }
 }

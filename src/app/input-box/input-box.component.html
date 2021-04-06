@@ -10,7 +10,10 @@
     </tr>
     <tr>
         <td>Select rows: </td>
-        <td><input [(ngModel)]="sortedStateOfInput"  title="Rows that are selected in the table" id="rowSelectorInput" placeholder="1,2,3-5,7-9" (ngModelChange)="selectChange($event)" (keydown)="test($event)" (blur)="lostFocus()" onclick=" let value = this.value; this.value = null; this.value=value"></td>
+        <td><input  [(ngModel)]="value"  title="Rows that are selected in the table" id="rowSelectorInput" placeholder="1,2,3-5,7-9" (ngModelChange)="selectChange($event,false)" (keydown)="keyDown($event)" (blur)="lostFocus()" onclick=" let value = this.value; this.value = null; this.value=value"></td>
+    </tr>
+    <tr class="alert"  *ngIf="isVisible">
+        <td colspan="2">{{issue}}</td>
     </tr>
 </table>
 <div>

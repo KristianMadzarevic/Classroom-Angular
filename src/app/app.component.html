@@ -1,5 +1,6 @@
 <h1 class="title">{{title}}</h1>
-<app-input-box></app-input-box>
+<p>{{message}}</p>
+<app-input-box (valueEvent)="receiveValue($event)" [value] ="message"[row]=9 [column]=7 ></app-input-box>
 
 <!-- <app-table1></app-table1>
 <app-input-field></app-input-field>
