@@ -1,0 +1,27 @@
+<p>
+  students works!
+</p>
+<input type="text" placeholder="Name" [(ngModel)]="nameInput" (keydown) = "nameSurnameKeyPressed($event)" (ngModelChange)="inputChange($event)">
+<input type="text" placeholder="Surname" [(ngModel)]="surnameInput" (keydown) = "nameSurnameKeyPressed($event)" (ngModelChange)="inputChange($event)">
+<input type="number" placeholder="ID" [(ngModel)]="idInput" (keydown)="idKeyPressed($event)" (ngModelChange)="inputChange($event)">
+<button class="input-button" (click)="addClicked()" >{{addFinish}}</button>
+<br>
+<div class="alert"  *ngIf="isVisible">
+  <p>{{issue}}</p>
+</div>
+<table>
+  <thead>
+    <th>Name</th>
+    <th>Surname</th>
+    <th>ID</th>
+    <th colspan="2">Options</th>
+  </thead>
+  <tr *ngFor=  "let student of students, let i = index">
+    <td>{{student.name}}</td>
+    <td>{{student.surname}}</td>
+    <td>{{student.id}}</td>
+    <td><button (click)="modifyClicked(i)">Modify</button></td>
+    <td><button (click)="deleteClicked(i)">Delete</button></td>
+  </tr>
+</table>
+

@@ -1,11 +1,16 @@
 import { Component, OnInit, Input, Output, EventEmitter,  ChangeDetectorRef} from '@angular/core';
+import { AssignerService } from '../assigner.service'
+import { Classroom } from '../Classroom'
+import { Student } from '../students/Student';
+import { STUDENTS } from '../students/student-list';
 
 @Component({
-  selector: 'app-input-box',
-  templateUrl: './input-box.component.html',
-  styleUrls: ['./input-box.component.css'],
+  selector: 'app-classroom',
+  templateUrl: './classroom.component.html',
+  styleUrls: ['./classroom.component.css']
 })
-export class InputBoxComponent implements OnInit {
+export class ClassroomComponent implements OnInit {
+  
   @Input() row = 9;//number of rows
   @Input() column = 7;//number of columns
   @Input() value:string = '';//value input by parent and shown in input field
@@ -19,9 +24,15 @@ export class InputBoxComponent implements OnInit {
   @Output() valueEvent = new EventEmitter<string>();//child -> parent
   isVisible:boolean = false;//trigger of a message as an alert
   issue:string = '';//the alert message
-  
-  constructor(private cd:ChangeDetectorRef) {}
+  students:Student[] = STUDENTS;
+  afterAssign:boolean = false;
 
+  constructor(private cd:ChangeDetectorRef, public assigner:AssignerService ) {
+    let aClassroom:Classroom = assigner.getClassroomInfo();
+    this.row = aClassroom.row;
+    this.column = aClassroom.column;
+    this.value = aClassroom.value;
+  }
   sendValueToParent(){
     /*child -> parent */
     this.valueEvent.emit(this.value);
@@ -33,7 +44,17 @@ export class InputBoxComponent implements OnInit {
   ngOnInit(): void {
     this.rowChange(this.row);
     this.columnChange(this.column);
+    /* assign values from assignerservice */
+    
     this.selectChange(this.value,true);
+  }
+  assignStudents(){
+    this.assigner.selectedRows=this.allSelectedRows;
+    this.issue = this.assigner.assignStudents();
+    if(this.issue != ''){
+      this.showAlert();
+    }
+    this.afterAssign = true;
   }
   rowChange(e: number) {
     /* create some rows */
@@ -127,7 +148,7 @@ export class InputBoxComponent implements OnInit {
     /* remove inputs that start or end with '-' */
     let tempInput= this.stateOfInput.slice();
     for(let i=0;i<tempInput.length;i++){
-      while(typeof this.stateOfInput[0] !== 'undefined' && (this.stateOfInput[i][0] == '-' || this.stateOfInput[i][this.stateOfInput[i].length-1] == '-' )){
+      while(typeof this.stateOfInput[0] !== 'undefined' && (this.stateOfInput[i][0] == '-' || this.stateOfInput[i][this.stateOfInput[i].length-1] == '-' || this.stateOfInput[i]=='0')){
         this.stateOfInput[i] = this.stateOfInput[i].substring(1,this.value.length);
       }
     }
@@ -136,7 +157,7 @@ export class InputBoxComponent implements OnInit {
     /* adds numbers from stateOfInput to allSelectedRows, for highlighting. Only allow adding new numbers, not duplicates.*/
     this.allSelectedRows = [];
     for( let oneInput of this.stateOfInput){
-      if(oneInput != ''){
+      if(oneInput != '' && oneInput != '0'){
         this.adder(oneInput);
       }
     }
@@ -186,10 +207,10 @@ export class InputBoxComponent implements OnInit {
     stateOfInputNumbers.sort(function (a, b){ return a-b;});
     this.numbersToString(stateOfInputNumbers);
     this.checkForDuplicates();
-    this.fillInPretty(true);
+    this.fillInPretty();
     this.sendValueToParent();
   }
-  fillInPretty(fillInLast:boolean) {
+  fillInPretty() {
     /* Add inputs from stateOfInput nicely into value. */
     this.value = '';
     for(let i = 0; i < this.stateOfInput.length; i++){
@@ -259,7 +280,7 @@ export class InputBoxComponent implements OnInit {
         }
       }
     }
-    /* filters for empty strings, sorts and puts the new sorted array on display */
+    /* filters for empty strings */
     this.stateOfInput = this.stateOfInput.filter(v => v!='');
   }
   checkNumberOfRows(){
@@ -268,12 +289,17 @@ export class InputBoxComponent implements OnInit {
       if(this.stateOfInput[k].includes('-')){//range
         let bigger = parseInt(this.stateOfInput[k].substring(this.stateOfInput[k].indexOf('-')+1,this.stateOfInput[k].length));
         if(bigger > this.row){
+          this.issue='The range you are trying to insert is too big!';
+          this.showAlert();
           this.subtractRange(bigger,false);
+          this.refill();
         }
       }
-
       if(parseInt(this.stateOfInput[k]) > this.row){//number
+        this.issue='The number you are trying to insert is too big!';
+        this.showAlert();
         this.stateOfInput.splice(this.stateOfInput.indexOf(String(k)),1);
+        this.refill();
       }
     }
   }
@@ -294,5 +320,8 @@ export class InputBoxComponent implements OnInit {
     if (this.isVisible) {return;} 
     this.isVisible = true;
     setTimeout(()=> this.isVisible = false,2000);
+  }
+  ngOnDestroy(){
+    this.assigner.setClassroomInfo(this.row, this.column, this.value);
   }
 }

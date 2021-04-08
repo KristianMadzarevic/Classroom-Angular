@@ -1,7 +1,16 @@
 <h1 class="title">{{title}}</h1>
-<p>{{message}}</p>
-<app-input-box (valueEvent)="receiveValue($event)" [value] ="message"[row]=9 [column]=7 ></app-input-box>
-
-<!-- <app-table1></app-table1>
-<app-input-field></app-input-field>
- -->
+<nav>
+    <ul>
+        <li>
+            <a routerLink = "classroom-component" routerLinkActive = "active">Classroom</a>
+        </li>
+        <li>
+            <a routerLink = "students-component" routerLinkActive = "active">Students</a>
+        </li>
+    </ul>
+</nav>
+<br>
+<!-- started working on router -->
+<router-outlet></router-outlet>
+<!-- <app-students></app-students>
+<app-classroom (valueEvent)="receiveValue($event)" [value] ="message"[row]=9 [column]=7 ></app-classroom> -->

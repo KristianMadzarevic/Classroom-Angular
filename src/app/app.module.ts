@@ -4,21 +4,25 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms';
-import { InputBoxComponent } from './input-box/input-box.component';
 import { CommonModule } from '@angular/common';
+import { ClassroomModule } from './classroom/classroom.module';
+import { StudentsModule } from './students/students.module';
+import { AssignerService } from './assigner.service';
 
 @NgModule({
   declarations: [
     AppComponent,
-    InputBoxComponent,
+
   ],
   imports: [
     BrowserModule,
     FormsModule,
     AppRoutingModule,
-    CommonModule
+    CommonModule,
+    ClassroomModule,
+    StudentsModule
   ],
-  providers: [],
+  providers: [AssignerService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
