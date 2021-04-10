@@ -32,11 +32,12 @@ public getClassroomInfo():Classroom{
   return aclassroom;
   }
 public assignStudents():string{
+  if(this.selectedRows.length == 0){
+    this.issue = 'You have to select some rows first. Try clicking them or writing to the Select Rows';
+  }
   /* display a message if there is too many students to assign */
-  if(this.students.length > (this.selectedRows.length*this.numberOfColumns)){
+  if(this.students.length > (this.selectedRows.length*this.numberOfColumns) && this.selectedRows.length != 0){
     this.issue = 'There are some students left that are not assigned!';
-  } else {
-    this.issue = '';
   }
   let studentsToAdd:Student[] = this.students.slice();
   for(let i=0; i<this.numberOfRows;i++){
@@ -45,7 +46,7 @@ public assignStudents():string{
     for(let j=0; j<this.numberOfColumns;j++){
       /* assign students to the assigned arrays */
       if(studentsToAdd[0] !== undefined && this.selectedRows.includes(i)){
-        this.assignedStudents[i][j] = studentsToAdd[0].name;
+        this.assignedStudents[i][j] = studentsToAdd[0].name +' ' + studentsToAdd[0].surname;
         studentsToAdd.shift();
       }
       

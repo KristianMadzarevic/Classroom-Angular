@@ -108,7 +108,6 @@ export class StudentsComponent implements OnInit{
   }
   nameSurnameKeyPressed(e:any){
     /* prevent certain keys from being pressed in the name and surname */
-    console.log(e);
     if(this.letters.includes(e.key) != true){
       e.preventDefault();
     }

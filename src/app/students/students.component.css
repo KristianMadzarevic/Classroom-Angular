@@ -1,0 +1,207 @@
+.div-div-div-input-table{
+    background-color: rgb(240, 240, 240);
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(255, 255, 255);;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    width:60vw;
+    margin: auto;
+    padding: 0.5vw 0;
+}
+.div-div-input-table{
+    background-color: rgb(235, 235, 235);
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(169, 173, 206);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    height:auto+1vw;
+    width: 59vw;
+    margin: auto;
+    padding: 0.5vw 0;
+}
+.div-input-table{
+    background-color: rgb(188, 217, 218);
+    border-style: solid;
+    border-width: 0px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 58vw;
+    margin: auto;
+    padding: 0.5vw 0;
+}
+.input-table{
+    background-color: rgb(148, 219, 198);
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(141, 147, 202);
+    border-radius: 5px;
+    width: 57vw;
+    margin: auto;
+    text-align: center;
+}
+
+.input-table-row{
+    background-color: rgb(148, 219, 198);
+    vertical-align: bottom;
+    width: 56vw;
+    height: 1.5vw;
+    margin: auto;
+    text-align: center;
+}
+.input-table-row td{
+    font-weight:600;
+    color: rgb(26, 114, 197);
+    background-color: rgb(148, 219, 198);
+    cursor:default;
+}
+.input{
+    cursor: pointer;
+    transition: all 0.5s ease;
+    border: 2px solid #cecece;
+    border-radius: 2px;
+    width:12vw;
+    text-align: center;
+    color: rgb(0, 0, 0);
+    padding: 0 0.5vw;
+    height:2vw;
+    font-size: 1vw;
+    outline: none;
+    box-shadow: none;
+    margin-bottom: 0.2vw;
+}
+.input:hover{
+    border-color: #34a3ff;
+}
+.input:focus{
+    transition: all 0.2s ease;
+    border-color: #34a3ff;
+    box-shadow: 0px -2px 0px rgb(40, 126, 195) inset,
+    0px 2px 0px rgb(40, 126, 195) inset,
+    -2px 0px 0px rgb(40, 126, 195) inset,
+    2px 0px 0px rgb(40, 126, 195) inset; 
+}
+.input-button-td{
+    flex-direction: row;
+    align-items:baseline;
+    width:12vw;
+}
+.input-button{
+    margin-bottom: 0.4vw;
+    font-size: 1.3vw;
+    cursor:pointer;
+    text-align: center;
+    align-items: center;
+    width:5vw;
+    color:#ffffff;
+    background-color: rgb(32, 147, 255);
+    padding:0.1vw;
+    border-radius: 5px;
+    border:none;
+    transition: all 0.5s ease;
+}
+.input-button:hover{
+    color: rgb(49, 246, 115);
+    font-weight: bold;
+    font-size: 1.5vw;
+    width:9vw;
+    transform: translateY(-0.45vw) scaleY(1.2);
+}
+button:focus{
+    outline: none;
+    box-shadow: none;
+}
+.alert{
+    color: red;
+    text-align: center;
+    width:57vw;
+    height:auto;
+    font-size: 20px;
+    padding:0.6vw;
+}
+.div-students-table{
+    width: 56vw;
+    margin:auto;
+    margin-top: 1vw;
+    background-color: rgb(224, 223, 223);
+    /* box-shadow: 0 0 100vw rgb(224, 224, 224) inset; */
+}
+.students-table{
+    border-spacing: 0;
+    width: 54vw;
+    margin:auto;
+    margin:1vw auto;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 0 3vw 0vw rgb(255, 255, 255);
+}
+.students-table-h{
+    width: 54vw;
+    text-align: center;
+    background-color: rgb(243, 243, 243);
+}
+.students-table-head{
+    cursor:default;
+    width:10vw;
+}
+.students-table-data{
+    cursor:default;
+    transition: all 0.5s ease;
+    padding: 0.3vw;
+    width:12vw;
+    height: 2vh;
+    background-color: rgb(255, 255, 255);
+    border-bottom: 1px solid #f0f0f0;
+}
+.students-table-d:hover>td{
+    background-color: rgb(243, 243, 243);
+}
+.students-table-id{
+    width:6vw;
+}
+.students-table-options{
+
+    width:6vw;
+}
+.student-button{
+    background-color: rgb(255, 255, 255);
+    transition: all 0.5s ease;
+    width: 100%;
+    height:100%;
+    border-radius: 2px;
+}
+#modify-button{
+    border-width: 1px;
+    border-color: rgb(32, 147, 255);
+    color: rgb(32, 147, 255);
+    opacity:80%;
+}
+#modify-button:hover{
+    border-radius: 5px;
+    opacity: 100%;
+    border-style: dashed;
+    box-shadow: 0px -2px 0px rgb(32, 147, 255) inset,
+    0px 2px 0px rgb(32, 147, 255) inset,
+    -2px 0px 0px rgb(32, 147, 255) inset,
+    2px 0px 0px rgb(32, 147, 255) inset;
+}
+#delete-button{
+    border-width: 1px;
+    border-color: rgb(255, 77, 79);
+    color: rgb(255, 77, 79);
+    opacity:80%;
+}
+#delete-button:hover{
+    border-radius: 5px;
+    opacity: 100%;
+    border-style: dashed;
+    box-shadow: 0px -2px 0px rgb(255, 77, 79) inset,
+    0px 2px 0px rgb(255, 77, 79) inset,
+    -2px 0px 0px rgb(255, 77, 79) inset,
+    2px 0px 0px rgb(255, 77, 79) inset;
+}

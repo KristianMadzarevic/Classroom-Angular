@@ -3,20 +3,20 @@
   <tr>
       <td>Rows:</td>
       <td class="size-input-td"><input [(ngModel)]="row" class="size-input" title="Number of rows" placeholder="1-9" (ngModelChange)="rowChange($event)"></td>
+      <td rowspan="2" colspan="2"><button (click)="assignStudents()">Assign</button></td>
   </tr>
   <tr>
       <td>Columns:</td>
       <td class="size-input-td"><input [(ngModel)]="column" class="size-input" title="Number of columns" placeholder="1-9" (ngModelChange)="columnChange($event)"></td>
   </tr>
   <tr>
-      <td>Select rows: </td>
-      <td><input  [(ngModel)]="value"  title="Rows that are selected in the table" id="rowSelectorInput" placeholder="1,2,3-5,7-9" (ngModelChange)="selectChange($event,false)" (keydown)="keyDown($event)" (blur)="lostFocus()" onclick=" let value = this.value; this.value = null; this.value=value"></td>
+      <td colspan="2">Select rows: </td>
+      <td colspan="2"><input  [(ngModel)]="value"  title="Rows that are selected in the table" id="rowSelectorInput" placeholder="1,2,3-5,7-9" (ngModelChange)="selectChange($event,false)" (keydown)="keyDown($event)" (blur)="lostFocus()" onclick=" let value = this.value; this.value = null; this.value=value"></td>
   </tr>
   <tr class="alert"  *ngIf="isVisible">
-      <td colspan="2">{{issue}}</td>
+      <td colspan="4">{{issue}}</td>
   </tr>
 </table>
-<button (click)="assignStudents()">Assign</button>
 <div>
   <table class="classroom-table">
       <thead>

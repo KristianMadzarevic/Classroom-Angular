@@ -1,27 +1,54 @@
-<p>
-  students works!
-</p>
-<input type="text" placeholder="Name" [(ngModel)]="nameInput" (keydown) = "nameSurnameKeyPressed($event)" (ngModelChange)="inputChange($event)">
-<input type="text" placeholder="Surname" [(ngModel)]="surnameInput" (keydown) = "nameSurnameKeyPressed($event)" (ngModelChange)="inputChange($event)">
-<input type="number" placeholder="ID" [(ngModel)]="idInput" (keydown)="idKeyPressed($event)" (ngModelChange)="inputChange($event)">
-<button class="input-button" (click)="addClicked()" >{{addFinish}}</button>
-<br>
-<div class="alert"  *ngIf="isVisible">
-  <p>{{issue}}</p>
-</div>
-<table>
-  <thead>
-    <th>Name</th>
-    <th>Surname</th>
-    <th>ID</th>
-    <th colspan="2">Options</th>
-  </thead>
-  <tr *ngFor=  "let student of students, let i = index">
-    <td>{{student.name}}</td>
-    <td>{{student.surname}}</td>
-    <td>{{student.id}}</td>
-    <td><button (click)="modifyClicked(i)">Modify</button></td>
-    <td><button (click)="deleteClicked(i)">Delete</button></td>
-  </tr>
-</table>
-
+<div class="div-div-div-input-table">
+  <div class="div-div-input-table">
+    <div class="div-input-table">
+      <table class="input-table">
+        <tr class="input-table-row">
+          <td>
+            Name
+          </td>
+          <td>
+            Surname
+          </td>
+          <td>
+            ID
+          </td>
+        </tr>
+        <tr class="input-table-row">
+          <td>
+            <input class="input-text input" type="text" placeholder="ex.Pero" [(ngModel)]="nameInput" (keydown) = "nameSurnameKeyPressed($event)" (ngModelChange)="inputChange($event)">
+          </td>
+          <td>
+            <input class="input-text input" type="text" placeholder="ex.Perić" [(ngModel)]="surnameInput" (keydown) = "nameSurnameKeyPressed($event)" (ngModelChange)="inputChange($event)">
+          </td>
+          <td>
+            <input class="input-number input"  type="number" [(ngModel)]="idInput" (keydown)="idKeyPressed($event)" (ngModelChange)="inputChange($event)">
+          </td>
+          <td class="input-button-td">
+            <button class="input-button" (click)="addClicked()" >{{addFinish}}</button>
+          </td>
+        </tr>
+      </table>
+      <div class="alert"  *ngIf="isVisible">
+        <p>{{issue}}</p>
+      </div>
+    </div>
+    <div class="div-students-table">
+      <table class="students-table">
+        <thead class="students-table-h">
+          <th class="students-table-head" >Name</th>
+          <th class="students-table-head" >Surname</th>
+          <th class="students-table-head students-table-id">ID</th>
+          <th class="students-table-head students-table-options" colspan="2">Options</th>
+        </thead>
+        <tr class="students-table-d" *ngFor=  "let student of students, let i = index">
+          <td class="students-table-data">{{student.name}}</td>
+          <td class="students-table-data" >{{student.surname}}</td>
+          <td class="students-table-data students-table-id" align="center" >{{student.id}}</td>
+          <td class="students-table-data students-table-options" align="center" ><button class="student-button" id="modify-button" (click)="modifyClicked(i)">Modify</button></td>
+          <td class="students-table-data students-table-options" align="center" ><button class="student-button" id="delete-button" (click)="deleteClicked(i)">Delete</button></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>    
+  

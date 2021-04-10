@@ -1,15 +1,19 @@
-<h1 class="title">{{title}}</h1>
-<nav>
-    <ul>
-        <li>
-            <a routerLink = "classroom-component" routerLinkActive = "active">Classroom</a>
-        </li>
-        <li>
-            <a routerLink = "students-component" routerLinkActive = "active">Students</a>
-        </li>
-    </ul>
-</nav>
-<br>
+<div class="nav-container">
+    <nav class="cast-shadow">
+        <h1 class="title">{{title}}</h1>
+        <div class="nav-links">
+            <ul class="nav-links-ul">
+                <li class="nav-links-ul-li" >
+                    <a class="nav-links-ul-li-a" routerLink = "classroom-component" routerLinkActive = "active">Layout</a>
+                </li>
+                <li class="nav-links-ul-li" >
+                    <a class="nav-links-ul-li-a" routerLink = "students-component" routerLinkActive = "active">Students</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
 <!-- started working on router -->
 <router-outlet></router-outlet>
 <!-- <app-students></app-students>

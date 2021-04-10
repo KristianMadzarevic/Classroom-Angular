@@ -49,6 +49,8 @@ export class ClassroomComponent implements OnInit {
     this.selectChange(this.value,true);
   }
   assignStudents(){
+    this.assigner.numberOfRows=this.row;
+    this.assigner.numberOfColumns=this.column;
     this.assigner.selectedRows=this.allSelectedRows;
     this.issue = this.assigner.assignStudents();
     if(this.issue != ''){
