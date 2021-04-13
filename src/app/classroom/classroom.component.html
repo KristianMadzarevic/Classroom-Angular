@@ -1,38 +1,52 @@
-
-<table class="input-rows-cols-table">
-  <tr>
-      <td>Rows:</td>
-      <td class="size-input-td"><input [(ngModel)]="row" class="size-input" title="Number of rows" placeholder="1-9" (ngModelChange)="rowChange($event)"></td>
-      <td rowspan="2" colspan="2"><button (click)="assignStudents()">Assign</button></td>
-  </tr>
-  <tr>
-      <td>Columns:</td>
-      <td class="size-input-td"><input [(ngModel)]="column" class="size-input" title="Number of columns" placeholder="1-9" (ngModelChange)="columnChange($event)"></td>
-  </tr>
-  <tr>
-      <td colspan="2">Select rows: </td>
-      <td colspan="2"><input  [(ngModel)]="value"  title="Rows that are selected in the table" id="rowSelectorInput" placeholder="1,2,3-5,7-9" (ngModelChange)="selectChange($event,false)" (keydown)="keyDown($event)" (blur)="lostFocus()" onclick=" let value = this.value; this.value = null; this.value=value"></td>
-  </tr>
-  <tr class="alert"  *ngIf="isVisible">
-      <td colspan="4">{{issue}}</td>
-  </tr>
-</table>
-<div>
-  <table class="classroom-table">
-      <thead>
-          <tr>
-              <th></th>
-              <th class="column-number" *ngFor="let col of columns; let i = index">C{{i+1}}</th>
-          </tr>
-      </thead>
-     <tbody>
-      <tr *ngFor="let row of rows; let i = index" [ngClass]="{'selected': checkIsRowSelected(i)}" (click)="rowClicked(i+1)">
-          <td class="row-number">{{i+1}}</td> 
-          <td *ngFor="let col of columns" >
-              <div class="square" >
-                  <p *ngIf = "afterAssign">{{assigner.assignedStudents[row+1][col]}}</p></div>
-          </td>
-       </tr>
-     </tbody>
+<div class="div-insert">
+    <div class="div-div-insert">
+        <div class="div-insert-inner">
+            <div class="div-insert-inner-inputs">
+                <div class="div-insert-rowscols">
+                    <!-- p and input -->
+                    <p class="insert-p upper-text">Rows:</p>
+                    <input [(ngModel)]="row" class="insert-input input" title="Number of rows" placeholder="1-9" (ngModelChange)="rowChange($event)">
+                </div>
+                <div class="div-insert-rowscols">
+                    <!-- p and input -->
+                    <p class="insert-p upper-text">Columns:</p>
+                    <input [(ngModel)]="column" class="insert-input input" title="Number of columns" placeholder="1-9" (ngModelChange)="columnChange($event)">
+                </div>
+            </div>
+            <div class="div-assign-button">
+                <button class="assign-button" (click)="assignStudents()">Assign</button>
+            </div>
+        </div>
+        <div class="div-select-rows">
+            <p class="select-rows upper-text">Select rows: </p>
+            <input  [(ngModel)]="value" class="select-rows-input input" title="Rows that are selected in the table" id="rowSelectorInput" placeholder="1,2,3-5,7-9" (ngModelChange)="selectChange($event,false)" (keydown)="keyDown($event)" (blur)="lostFocus()" onclick=" let value = this.value; this.value = null; this.value=value">
+        </div>
+        <div *ngIf="isVisible" class="div-alert">
+            <p class="alert">{{issue}}</p>
+        </div>
+    </div>
+</div>
+<!-- Classroom: -->
+<div class="div-classroom-table">
+    <table class="classroom-table">
+        <thead class="classroom-table-head">
+            <tr class="classroom-table-head-tr">
+                <th class="classroom-table-head-tr-td"></th>
+                <th class="column-number" *ngFor="let col of columns; let i = index">C{{i+1}}</th>
+            </tr>
+        </thead>
+        <tbody class="classroom-table-body">
+            <tr class="classroom-table-body-tr" *ngFor="let row of rows; let i = index" [ngClass]="{'selected': checkIsRowSelected(i),'too-big':checkNumberOfCols()}" (click)="rowClicked(i+1)">
+                <td class="row-number">{{i+1}}</td> 
+                <td class="classroom-table-body-tr-td" *ngFor="let col of columns" >
+                    <div [style.width.vw]="widthOfCol" class="desk-div">
+                        <div [innerHTML]="assigner.assignedStudents[row+1][col]" class="desk" *ngIf = "afterAssign"></div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
   </table>
 </div>
+
+
+

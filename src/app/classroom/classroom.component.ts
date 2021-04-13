@@ -26,6 +26,7 @@ export class ClassroomComponent implements OnInit {
   issue:string = '';//the alert message
   students:Student[] = STUDENTS;
   afterAssign:boolean = false;
+  widthOfCol:number = 10;
 
   constructor(private cd:ChangeDetectorRef, public assigner:AssignerService ) {
     let aClassroom:Classroom = assigner.getClassroomInfo();
@@ -49,6 +50,7 @@ export class ClassroomComponent implements OnInit {
     this.selectChange(this.value,true);
   }
   assignStudents(){
+    /* Assigns students to rows, activates upon clicking assign or unselecting rows when students have already been asigned. */
     this.assigner.numberOfRows=this.row;
     this.assigner.numberOfColumns=this.column;
     this.assigner.selectedRows=this.allSelectedRows;
@@ -73,6 +75,8 @@ export class ClassroomComponent implements OnInit {
     for (let i = 0; i < this.column; i++) {
       this.columns.push(i);
     }
+    this.widthOfCol = 60/this.column;
+    /* this.widthOfCol= this.column; */
   }
   keyDown(e: any) {
     /* disable input of some obviously wrong strings */
@@ -227,6 +231,12 @@ export class ClassroomComponent implements OnInit {
     i++;
     return this.allSelectedRows.includes(i);
   }
+  checkNumberOfCols(){
+    if(this.column>=6){
+      return true;
+    }
+    return false;
+  }
   rowClicked(i:any){
     /* when a row is clicked, if it's a new row, add it. if it's already added, remove it. */
     if(this.allSelectedRows.includes(i) == false){
@@ -240,12 +250,18 @@ export class ClassroomComponent implements OnInit {
       this.stateOfInput.splice(this.stateOfInput.indexOf(String(i)),1);
       this.refill();
       this.lostFocus();
+      if(this.afterAssign==true){
+        this.assignStudents();
+      }
       return;
     }
     /* range substraction here */
     this.subtractRange(i,true);
     this.refill();
     this.lostFocus();
+    if(this.afterAssign==true){
+      this.assignStudents();
+    }
   }
   subtractRange(i:any,addRest:boolean){
     /* removes a range containing number i from stateOfInput */
@@ -318,10 +334,10 @@ export class ClassroomComponent implements OnInit {
     }
   }
   showAlert(){
-    /* hide the alert after 2s */
+    /* hide the alert after 3s */
     if (this.isVisible) {return;} 
     this.isVisible = true;
-    setTimeout(()=> this.isVisible = false,2000);
+    setTimeout(()=> this.isVisible = false,3000);
   }
   ngOnDestroy(){
     this.assigner.setClassroomInfo(this.row, this.column, this.value);

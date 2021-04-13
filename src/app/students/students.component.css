@@ -4,11 +4,11 @@
     border-width: 1px;
     border-color: rgb(255, 255, 255);;
     border-radius: 5px;
+    padding: 0.5vw 0;
     display: flex;
     align-items: center;
     width:60vw;
     margin: auto;
-    padding: 0.5vw 0;
 }
 .div-div-input-table{
     background-color: rgb(235, 235, 235);
@@ -16,13 +16,13 @@
     border-width: 1px;
     border-color: rgb(169, 173, 206);
     border-radius: 5px;
+    padding: 0.5vw 0;
     display: flex;
     align-items: center;
     flex-direction: column;
     height:auto+1vw;
     width: 59vw;
     margin: auto;
-    padding: 0.5vw 0;
 }
 .div-input-table{
     background-color: rgb(188, 217, 218);
@@ -37,7 +37,7 @@
     padding: 0.5vw 0;
 }
 .input-table{
-    background-color: rgb(148, 219, 198);
+    background-color: rgb(162, 230, 209);
     border-style: solid;
     border-width: 1px;
     border-color: rgb(141, 147, 202);
@@ -48,7 +48,7 @@
 }
 
 .input-table-row{
-    background-color: rgb(148, 219, 198);
+    background-color: rgb(162, 230, 209);
     vertical-align: bottom;
     width: 56vw;
     height: 1.5vw;
@@ -58,7 +58,7 @@
 .input-table-row td{
     font-weight:600;
     color: rgb(26, 114, 197);
-    background-color: rgb(148, 219, 198);
+    background-color: rgb(162, 230, 209);
     cursor:default;
 }
 .input{
@@ -120,10 +120,10 @@ button:focus{
 .alert{
     color: red;
     text-align: center;
-    width:57vw;
-    height:auto;
     font-size: 20px;
     padding:0.6vw;
+    width:57vw;
+    height:auto;
 }
 .div-students-table{
     width: 56vw;

@@ -17,13 +17,24 @@
     font-family: 'Poppins', sans-serif;
     background-color: #ffffff;
 }
+.title-div{
+    position: relative;
+    width:40%;
+}
 .title{
-    width: 40%;
+    font-weight: 300;
+    width: 100%;
     text-align: center;
-    color: #d4bd3b;
-    font-size: 3em;
-    text-shadow: 2px 2px  2px#c05f5f,-2px 2px 2px #c05f5f;
+    letter-spacing: 0.3vw;
+    color: rgb(48, 117, 182);
+    font-size: 4vw;
+    text-shadow: 2px 2px  2px#60839b,-2px 2px 2px #60839b;
     cursor: default;
+    transition: letter-spacing 2s ease, color 2s ease-out;
+}
+.title:hover{
+letter-spacing: 0.6vw;
+color:gold;
 }
 .nav-links{
     width:60%;
@@ -45,7 +56,7 @@
 }
 .nav-links-ul-li-a{
     transition: all 0.8s ease;
-    font-size: 2em;
+    font-size: 2.5vw;
     text-decoration: none;
 }
 .nav-links-ul-li-a.active{
@@ -61,5 +72,5 @@
     font-weight: bold;
 }
 .nav-links-ul-li-a:not(.active):hover{
-    transform: scale(1.5);
+    transform: scale(1.3);
 }
