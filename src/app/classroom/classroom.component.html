@@ -40,7 +40,7 @@
                 <td class="row-number">{{i+1}}</td> 
                 <td class="classroom-table-body-tr-td" *ngFor="let col of columns" >
                     <div [style.width.vw]="widthOfCol" class="desk-div">
-                        <div [innerHTML]="assigner.assignedStudents[row+1][col]" class="desk" *ngIf = "afterAssign"></div>
+                        <div *ngIf = "afterAssign" [innerHTML]="assigner.assignedStudents[row+1][col]" class="desk"></div>
                     </div>
                 </td>
             </tr>

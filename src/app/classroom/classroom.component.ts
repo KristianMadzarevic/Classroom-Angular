@@ -253,6 +253,9 @@ export class ClassroomComponent implements OnInit {
       if(this.afterAssign==true){
         this.assignStudents();
       }
+      if(this.allSelectedRows.length == 0){
+        this.afterAssign=false;
+      }
       return;
     }
     /* range substraction here */
@@ -261,6 +264,9 @@ export class ClassroomComponent implements OnInit {
     this.lostFocus();
     if(this.afterAssign==true){
       this.assignStudents();
+    }
+    if(this.allSelectedRows.length == 0){
+      this.afterAssign=false;
     }
   }
   subtractRange(i:any,addRest:boolean){
