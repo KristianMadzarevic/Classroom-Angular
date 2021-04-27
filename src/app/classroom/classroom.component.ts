@@ -11,8 +11,8 @@ import { STUDENTS } from '../students/student-list';
 })
 export class ClassroomComponent implements OnInit {
   
-  @Input() row = 9;//number of rows
-  @Input() column = 7;//number of columns
+  @Input() row = 5;//number of rows
+  @Input() column = 6;//number of columns
   @Input() value:string = '';//value input by parent and shown in input field
   rows: number[] = [];//container of rows
   columns: number[] = [];//container of columns
@@ -33,21 +33,24 @@ export class ClassroomComponent implements OnInit {
     this.row = aClassroom.row;
     this.column = aClassroom.column;
     this.value = aClassroom.value;
-  }
-  sendValueToParent(){
-    /*child -> parent */
-    this.valueEvent.emit(this.value);
+    this.afterAssign = aClassroom.afterAssign;
   }
   ngAfterViewInit(){
     /* detects changes after initialisation, possibly input by parent */
     this.cd.detectChanges();
   }
   ngOnInit(): void {
-    this.rowChange(this.row);
-    this.columnChange(this.column);
+    this.rowChange(this.row, false);
+    this.columnChange(this.column, false);
     /* assign values from assignerservice */
     
     this.selectChange(this.value,true);
+    this.issue = this.assigner.assignStudents();
+    if(this.issue != ''){
+      this.showAlert();
+    }
+    if(this.afterAssign){
+    }
   }
   assignStudents(){
     /* Assigns students to rows, activates upon clicking assign or unselecting rows when students have already been asigned. */
@@ -58,22 +61,39 @@ export class ClassroomComponent implements OnInit {
     if(this.issue != ''){
       this.showAlert();
     }
+    if(this.allSelectedRows.length == 0){
+      this.afterAssign = false;
+      return;
+    }
     this.afterAssign = true;
   }
-  rowChange(e: number) {
+  assignAllStudents(){
+    this.assigner.assignAllStudents();
+    this.assignStudents();
+  }
+  rowChange(e: number, initialised:boolean) {
     /* create some rows */
     this.rows=[];
     this.row = e;
     for (let i = 0; i < this.row; i++) {
       this.rows.push(i);
     }
+    if(initialised){
+      this.value = '';
+      this.selectChange('', true);
+      this.assigner.resetStudentPositions();
+    }
   }
-  columnChange(e: number) {
+  columnChange(e: number, initialised:boolean) {
     /* create some columns */
     this.columns=[];
     this.column = e;
     for (let i = 0; i < this.column; i++) {
       this.columns.push(i);
+    }
+    if(initialised){
+      this.value = '';
+      this.selectChange('', true);
     }
     this.widthOfCol = 60/this.column;
     /* this.widthOfCol= this.column; */
@@ -137,7 +157,12 @@ export class ClassroomComponent implements OnInit {
     if(fromParent){
       this.lostFocus();
     }
-    this.sendValueToParent();//child -> parent
+    if(this.afterAssign==true){
+      this.assignStudents();
+    }
+    if(this.allSelectedRows.length == 0){
+      this.afterAssign=false;
+    }
   }
   removeUnwantedKeys(){
     /* remove everything except numbers and ,- */
@@ -214,7 +239,6 @@ export class ClassroomComponent implements OnInit {
     this.numbersToString(stateOfInputNumbers);
     this.checkForDuplicates();
     this.fillInPretty();
-    this.sendValueToParent();
   }
   fillInPretty() {
     /* Add inputs from stateOfInput nicely into value. */
@@ -243,6 +267,13 @@ export class ClassroomComponent implements OnInit {
       this.stateOfInput.push(String(i));
       this.refill();
       this.lostFocus();
+      this.assigner.selectedRows = this.allSelectedRows;
+      this.afterAssign = true;
+      this.assigner.afterAssign = true;
+      this.assigner.assignStudents();
+      if(this.allSelectedRows.length == 0){
+        this.afterAssign=false;
+      }
       return;
     }
     /* if it's a number, just substract it from stateOfInput*/
@@ -250,6 +281,8 @@ export class ClassroomComponent implements OnInit {
       this.stateOfInput.splice(this.stateOfInput.indexOf(String(i)),1);
       this.refill();
       this.lostFocus();
+      this.assigner.unassignStudents(i);
+      this.assigner.assignStudents();
       if(this.afterAssign==true){
         this.assignStudents();
       }
@@ -262,6 +295,7 @@ export class ClassroomComponent implements OnInit {
     this.subtractRange(i,true);
     this.refill();
     this.lostFocus();
+    this.assigner.assignStudents();
     if(this.afterAssign==true){
       this.assignStudents();
     }
@@ -346,6 +380,6 @@ export class ClassroomComponent implements OnInit {
     setTimeout(()=> this.isVisible = false,3000);
   }
   ngOnDestroy(){
-    this.assigner.setClassroomInfo(this.row, this.column, this.value);
+    this.assigner.setClassroomInfo(this.row, this.column, this.value,this.allSelectedRows, this.afterAssign);
   }
 }

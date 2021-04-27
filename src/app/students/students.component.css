@@ -1,3 +1,7 @@
+
+* {
+    user-select: none;
+}
 .div-div-div-input-table{
     background-color: rgb(240, 240, 240);
     border-style: solid;
@@ -174,6 +178,21 @@ button:focus{
     width: 100%;
     height:100%;
     border-radius: 2px;
+}
+#assign-button{
+    border-width: 1px;
+    border-color: rgb(106, 177, 110);
+    color: rgb(106, 177, 110);
+    opacity:80%;
+}
+#assign-button:hover{
+    border-radius: 5px;
+    opacity: 100%;
+    border-style: dashed;
+    box-shadow: 0px -2px 0px rgb(106, 177, 110) inset,
+    0px 2px 0px rgb(106, 177, 110) inset,
+    -2px 0px 0px rgb(106, 177, 110) inset,
+    2px 0px 0px rgb(106, 177, 110) inset;
 }
 #modify-button{
     border-width: 1px;

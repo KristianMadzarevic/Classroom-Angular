@@ -5,16 +5,16 @@
                 <div class="div-insert-rowscols">
                     <!-- p and input -->
                     <p class="insert-p upper-text">Rows:</p>
-                    <input [(ngModel)]="row" class="insert-input input" title="Number of rows" placeholder="1-9" (ngModelChange)="rowChange($event)">
+                    <input [(ngModel)]="row" class="insert-input input" title="Number of rows" placeholder="1-9" (ngModelChange)="rowChange($event, true)">
                 </div>
                 <div class="div-insert-rowscols">
                     <!-- p and input -->
                     <p class="insert-p upper-text">Columns:</p>
-                    <input [(ngModel)]="column" class="insert-input input" title="Number of columns" placeholder="1-9" (ngModelChange)="columnChange($event)">
+                    <input [(ngModel)]="column" class="insert-input input" title="Number of columns" placeholder="1-9" (ngModelChange)="columnChange($event, true)">
                 </div>
             </div>
             <div class="div-assign-button">
-                <button class="assign-button" (click)="assignStudents()">Assign</button>
+                <button class="assign-button" (click)="assignAllStudents()">Assign</button>
             </div>
         </div>
         <div class="div-select-rows">

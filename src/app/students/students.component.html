@@ -38,12 +38,17 @@
           <th class="students-table-head" >Name</th>
           <th class="students-table-head" >Surname</th>
           <th class="students-table-head students-table-id">ID</th>
-          <th class="students-table-head students-table-options" colspan="2">Options</th>
+          <th class="students-table-head students-table-id">Position</th>
+          <th class="students-table-head students-table-options" colspan="3">Options</th>
         </thead>
         <tr class="students-table-d" *ngFor=  "let student of students, let i = index">
           <td class="students-table-data">{{student.name}}</td>
           <td class="students-table-data" >{{student.surname}}</td>
           <td class="students-table-data students-table-id" align="center" >{{student.id}}</td>
+          <td class="students-table-data students-table-id" align="center" >{{student.position}}</td>
+          <td class="students-table-data students-table-options" align="center" ><button class="student-button" id="assign-button" (click)="assignClicked(i)">
+            <div *ngIf="student.toAssign; else elseBlock">Unassign</div> </button></td>
+          <ng-template #elseBlock>Assign</ng-template>
           <td class="students-table-data students-table-options" align="center" ><button class="student-button" id="modify-button" (click)="modifyClicked(i)">Modify</button></td>
           <td class="students-table-data students-table-options" align="center" ><button class="student-button" id="delete-button" (click)="deleteClicked(i)">Delete</button></td>
         </tr>

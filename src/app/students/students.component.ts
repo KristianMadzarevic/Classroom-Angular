@@ -1,4 +1,5 @@
 import { Component, NgModule, OnInit } from '@angular/core';
+import { AssignerService } from '../assigner.service';
 import { Student } from './Student';
 import { STUDENTS } from './student-list'
 
@@ -21,9 +22,11 @@ export class StudentsComponent implements OnInit{
   modifyID:number =  0;
   addFinish:string = 'Add';
   
-  constructor() { }
+  constructor(public assigner:AssignerService) { }
   
   ngOnInit() {
+    this.assigner.afterAssign = true;
+    this.assigner.assignStudents();
   }
   addClicked(){
     /* changes the button text */
@@ -45,8 +48,14 @@ export class StudentsComponent implements OnInit{
       this.showAlert();
       return;
     }
-    let tempStudent:Student = {name:this.nameInput,surname:this.surnameInput,id:this.idInput}
+    let tempStudent:Student = {name:this.nameInput,surname:this.surnameInput,id:this.idInput, position: 'None', assigned:false, toAssign:false}
     this.students.push(tempStudent);
+  }
+  assignClicked(i:any){
+    this.students[i].toAssign = this.students[i].toAssign ? false : true;
+    this.assigner.afterAssign = true;
+    this.assigner.assignStudents();
+    /* Make them re-assign here now */
   }
   deleteClicked(i:any){
     /* delete the student clicked */
@@ -60,7 +69,6 @@ export class StudentsComponent implements OnInit{
     this.idInput= this.students[i].id;
     this.modifySwitch = true;
     this.modifyID = i;
-    console.log(i);
   }
   inputChange(e:string){
     /* on changing the fields, if modifying, update the student that's being modified */

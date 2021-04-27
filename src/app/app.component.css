@@ -31,6 +31,7 @@
     text-shadow: 2px 2px  2px#60839b,-2px 2px 2px #60839b;
     cursor: default;
     transition: letter-spacing 2s ease, color 2s ease-out;
+    user-select: none;
 }
 .title:hover{
 letter-spacing: 0.6vw;
@@ -58,6 +59,7 @@ color:gold;
     transition: all 0.8s ease;
     font-size: 2.5vw;
     text-decoration: none;
+    user-select: none;
 }
 .nav-links-ul-li-a.active{
     color: rgb(114, 114, 114);

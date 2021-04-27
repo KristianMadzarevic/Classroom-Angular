@@ -1,6 +1,7 @@
 * {
     margin:0;
     padding: 0;
+    user-select: none;
 }
 .div-insert{
     background-color: rgb(250, 250, 250);
@@ -156,7 +157,10 @@
     font-size: 20px;
     padding:0.6vw;
 }
-
+.desk-image{
+    width:50%;
+    height:100%;
+}
 /* Classroom */
 .classroom-table{
     padding:1vw;
